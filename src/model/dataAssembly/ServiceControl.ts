@@ -23,13 +23,11 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime} from './DataAssembly';
+import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
 import {OpcUaDataItem} from './DataItem';
 import {OpModeDA, OpModeRuntime} from './mixins/OpMode';
-import {SourceModeDA, SourceModeRuntime} from './mixins/SourceMode';
-import {WritableDataAssembly} from './WritableDataAssembly';
 
-export type ServiceControlRuntime  = BaseDataAssemblyRuntime & OpModeRuntime & SourceModeRuntime & {
+export type ServiceControlRuntime  = BaseDataAssemblyRuntime & OpModeRuntime & {
     CommandMan: OpcUaDataItem<number>;
     CommandExt: OpcUaDataItem<number>;
     CommandEnable: OpcUaDataItem<number>;
@@ -40,22 +38,19 @@ export type ServiceControlRuntime  = BaseDataAssemblyRuntime & OpModeRuntime & S
     CurrentStrategy: OpcUaDataItem<number>;
 };
 
-export class ServiceControl extends OpModeDA(SourceModeDA(WritableDataAssembly)) {
+export class ServiceControl extends OpModeDA(DataAssembly) {
     public readonly communication: ServiceControlRuntime;
 
     constructor(options, connection) {
         super(options, connection);
-        this.communication.CommandMan = this.createDataItem(['CommandMan', 'ControlOp'], 'write');
-        this.communication.CommandExt = this.createDataItem(['CommandExt', 'ControlExt'], 'write');
-        this.communication.CommandEnable = this.createDataItem(['CommandEnable', 'ControlEnable'], 'read');
-        this.communication.State = this.createDataItem('State', 'read');
-        this.communication.StrategyMan = this.createDataItem(['StrategyMan', 'StrategyOp'], 'write');
-        this.communication.StrategyExt = this.createDataItem('StrategyExt', 'write');
-        this.communication.StrategyInt = this.createDataItem('StrategyInt', 'read');
-        this.communication.CurrentStrategy = this.createDataItem(['CurrentStrategy', 'Strategy'], 'read');
-
-        this.readDataItem = this.communication.State;
-        this.writeDataItem = this.communication.CommandExt;
+        this.createDataItem(options, 'CommandMan', 'write');
+        this.createDataItem(options, 'CommandExt', 'write');
+        this.createDataItem(options, 'CommandEnable', 'read');
+        this.createDataItem(options, 'State', 'read');
+        this.createDataItem(options, 'StrategyMan', 'write');
+        this.createDataItem(options, 'StrategyExt', 'write');
+        this.createDataItem(options, 'StrategyInt', 'read');
+        this.createDataItem(options, 'CurrentStrategy', 'read');
     }
 
 }

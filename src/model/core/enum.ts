@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-import {ControlEnableInterface} from '@p2olab/polaris-interface';
+import {ControlEnableInterface, OpModeInterface} from '@p2olab/polaris-interface';
 
 export enum ServiceState {
     UNDEFINED = 1,
@@ -83,4 +83,47 @@ export enum ServiceMtpCommand {
     ABORT = 256,
     RESTART = 512,
     COMPLETE = 1024
+}
+
+export enum OperationMode {
+    Offline,
+    Operator,
+    Automatic
+}
+
+export enum SourceMode {
+    Manual,
+    Intern
+}
+
+export function opModetoJson(opMode: OperationMode): OpModeInterface {
+    let state;
+    if (isManualState(opMode)) {
+        state = 'operator';
+    } else if (isAutomaticState(opMode)) {
+        state = 'automatic';
+    } else if (isOffState(opMode)) {
+        state = 'offline';
+    }
+    return {state: state, source: undefined};
+}
+
+export function isOffState(opMode: OperationMode): boolean {
+    return (opMode === OperationMode.Offline);
+}
+
+export function isAutomaticState(opMode: OperationMode): boolean {
+    return (opMode === OperationMode.Automatic);
+}
+
+export function isManualState(opMode: OperationMode): boolean {
+    return (opMode === OperationMode.Operator);
+}
+
+export function isExtSource(sourceMode: SourceMode): boolean {
+    return (sourceMode === SourceMode.Manual);
+}
+
+export function isIntSource(sourceMode: SourceMode): boolean {
+    return (sourceMode === SourceMode.Intern);
 }
