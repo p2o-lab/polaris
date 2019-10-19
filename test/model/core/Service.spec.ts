@@ -23,16 +23,14 @@
  * SOFTWARE.
  */
 
-import {ServiceCommand} from '@p2olab/polaris-interface';
+import {OperationMode, ServiceCommand, ServiceOptions, SourceMode} from '@p2olab/polaris-interface';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as fs from 'fs';
 import * as parseJson from 'json-parse-better-errors';
-import {
-    isAutomaticState, isExtSource, isOffState, OperationMode,
-    ServiceState
-} from '../../../src/model/core/enum';
+import {ServiceState} from '../../../src/model/core/enum';
 import {Module} from '../../../src/model/core/Module';
+import {OpcUaConnection} from '../../../src/model/core/OpcUaConnection';
 import {Service} from '../../../src/model/core/Service';
 import {ModuleTestServer} from '../../../src/moduleTestServer/ModuleTestServer';
 import {TestServerService} from '../../../src/moduleTestServer/ModuleTestService';
@@ -68,6 +66,23 @@ describe('Service', () => {
         const module = new Module(moduleJson);
         const service = module.services[0];
         await expect(service.executeCommand(ServiceCommand.start)).to.be.rejectedWith('Module is not connected');
+    });
+
+    it('should create service from module test server json', () => {
+        const json =
+            parseJson(fs.readFileSync('assets/modules/module_testserver_1.0.0.json', 'utf8'), null, 60)
+                .modules[0].services[0];
+        const service = new Service(json, new OpcUaConnection(null, null), 'root');
+        expect(service.name).to.equal('Service1');
+    });
+
+    it('should reject creating it with not all variables defined for serviceControl', () => {
+        const json: ServiceOptions =
+            parseJson(fs.readFileSync('assets/modules/module_testserver_1.0.0.json', 'utf8'), null, 60)
+                .modules[0].services[0];
+        json.communication.OpMode = null;
+        expect(() => new Service(json, new OpcUaConnection(null, null), 'root'))
+            .to.throw('Service Control not fully defined in options');
     });
 
     context('with ModuleTestServer', () => {
@@ -187,6 +202,20 @@ describe('Service', () => {
             });
         });
 
+        it('waitForOpModeSpecificTest', async () => {
+            testService.opMode.opMode = 0;
+            await service.serviceControl.waitForOpModeToPassSpecificTest(OperationMode.Offline);
+            expect(service.serviceControl.getOperationMode()).to.equal(OperationMode.Offline);
+
+            service.setOperationMode();
+
+            await service.serviceControl.waitForOpModeToPassSpecificTest(OperationMode.Automatic);
+            expect(service.serviceControl.getOperationMode()).to.equal(OperationMode.Automatic);
+
+            await service.serviceControl.waitForSourceModeToPassSpecificTest(SourceMode.Manual);
+            expect(service.serviceControl.getSourceMode()).to.equal(SourceMode.Manual);
+        });
+
         it('full service state cycle', async () => {
             let result = service.getOverview();
             expect(result).to.have.property('status', 'IDLE');
@@ -205,10 +234,8 @@ describe('Service', () => {
 
             expect(result).to.have.property('currentStrategy', 'Strategy 1');
             expect(result).to.have.property('name', 'Service1');
-            expect(result).to.have.property('opMode').to.deep.equal({
-                state: 'off',
-                source: undefined
-            });
+            expect(result).to.have.property('operationMode').to.equal('offline');
+            expect(result).to.have.property('sourceMode').to.equal('manual');
 
             await service.setOperationMode();
 
@@ -229,10 +256,9 @@ describe('Service', () => {
 
             expect(result).to.have.property('currentStrategy', 'Strategy 1');
             expect(result).to.have.property('name', 'Service1');
-            expect(result).to.have.property('opMode').to.deep.equal({
-                state: 'automatic',
-                source: 'external'
-            });
+            expect(result).to.have.property('operationMode').to.equal('automatic');
+            expect(result).to.have.property('sourceMode').to.equal('manual');
+
             expect(result.strategies[0].processValuesIn).to.have.length(1);
             expect(result.strategies[0].processValuesIn[0].value).to.equal(1);
             expect(result.strategies[0].processValuesOut).to.have.length(3);

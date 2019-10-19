@@ -24,12 +24,11 @@
  */
 
 import {
-    ControlEnableInterface,
-    OpModeInterface,
+    ControlEnableInterface, OperationMode,
     ParameterOptions,
     ServiceCommand,
     ServiceInterface,
-    ServiceOptions
+    ServiceOptions, SourceMode
 } from '@p2olab/polaris-interface';
 import {EventEmitter} from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
@@ -39,7 +38,7 @@ import {DataAssembly} from '../dataAssembly/DataAssembly';
 import {DataAssemblyFactory} from '../dataAssembly/DataAssemblyFactory';
 import {ServiceControl} from '../dataAssembly/ServiceControl';
 import {BaseService, BaseServiceEvents} from './BaseService';
-import {controlEnableToJson, OperationMode, opModetoJson, ServiceControlEnable, ServiceMtpCommand, ServiceState} from './enum';
+import {controlEnableToJson, ServiceControlEnable, ServiceMtpCommand, ServiceState} from './enum';
 import {Module} from './Module';
 import {OpcUaConnection} from './OpcUaConnection';
 import {Strategy} from './Strategy';
@@ -48,7 +47,10 @@ import {Strategy} from './Strategy';
  * Events emitted by [[Service]]
  */
 interface ServiceEvents extends BaseServiceEvents {
-    opMode: OpModeInterface;
+    opMode: {
+        operationMode: OperationMode,
+        sourceMode: SourceMode
+    };
 }
 
 type ServiceEmitter = StrictEventEmitter<EventEmitter, ServiceEvents>;
@@ -110,7 +112,6 @@ export class Service extends BaseService {
         this.serviceControl = new ServiceControl(
             {name: this._name, interface_class: 'ServiceControl', communication: serviceOptions.communication},
             connection);
-        this.serviceControl.checkExistenceOfAllDataItems();
 
         this.strategies = serviceOptions.strategies
             .map((option) => new Strategy(option, connection));
@@ -146,8 +147,12 @@ export class Service extends BaseService {
             })
             .on('OpMode', () => {
                 this.logger.debug(`[${this.qualifiedName}] Current OpMode changed: ` +
-                    `${opModetoJson(this.serviceControl.getOperationMode())}`);
-                this.eventEmitter.emit('opMode', opModetoJson(this.serviceControl.getOperationMode()));
+                    `${this.serviceControl.getOperationMode()}`);
+                this.eventEmitter.emit('opMode',
+                    {
+                        operationMode: this.serviceControl.getOperationMode(),
+                        sourceMode: this.serviceControl.getSourceMode()
+                    });
             })
             .on('State', () => {
                 this.logger.debug(`[${this.qualifiedName}] State changed: ` +
@@ -193,7 +198,8 @@ export class Service extends BaseService {
         const currentStrategy = this.getCurrentStrategy();
         return {
             name: this.name,
-            opMode: opModetoJson(this.serviceControl.getOperationMode()),
+            operationMode: this.serviceControl.getOperationMode(),
+            sourceMode: this.serviceControl.getSourceMode(),
             status: ServiceState[this.state],
             strategies: this.strategies.map((strategy) => strategy.toJson()),
             currentStrategy: currentStrategy ? currentStrategy.name : null,
@@ -311,11 +317,12 @@ export class Service extends BaseService {
         });
     }
 
-    public setOperationMode(): Promise<void> {
+    public async setOperationMode() {
         if (this.automaticMode) {
-            return this.serviceControl.setToAutomaticOperationMode();
+            await this.serviceControl.setToAutomaticOperationMode();
+            await this.serviceControl.setToExternalSourceMode();
         } else {
-            return this.serviceControl.setToManualOperationMode();
+            await this.serviceControl.setToManualOperationMode();
         }
     }
 

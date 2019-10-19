@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-import {ControlEnableInterface, OpModeInterface} from '@p2olab/polaris-interface';
+import {ControlEnableInterface} from '@p2olab/polaris-interface';
 
 export enum ServiceState {
     UNDEFINED = 1,
