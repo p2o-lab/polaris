@@ -56,7 +56,7 @@ export class ModuleTestOpMode {
                         this.opMode = this.opMode & ~OpMode.srcIntAct;
                     } else {
                         return StatusCodes.Bad;
-                        }
+                    }
                     catTestServer.info(`[${variableName}] Set Opmode in testserver ${opModeInt} -> ${this.opMode}`);
                     return StatusCodes.Good;
                 }
