@@ -54,6 +54,9 @@ export class ModuleTestOpMode {
                         this.opMode = this.opMode | OpMode.srcIntAct;
                     } else if (opModeInt === OpMode.srcExtOp) {
                         this.opMode = this.opMode & ~OpMode.srcIntAct;
+                    } else if (opModeInt === OpMode.stateOffOp) {
+                        this.opMode = this.opMode & ~OpMode.stateAutAct;
+                        this.opMode = this.opMode & ~OpMode.stateManAct;
                     } else {
                         return StatusCodes.Bad;
                     }
