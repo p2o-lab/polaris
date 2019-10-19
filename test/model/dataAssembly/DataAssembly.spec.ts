@@ -39,7 +39,6 @@ import {DigMon} from '../../../src/model/dataAssembly/DigView';
 import {MonAnaDrv} from '../../../src/model/dataAssembly/Drv';
 import {ServiceControl} from '../../../src/model/dataAssembly/ServiceControl';
 import {StrView} from '../../../src/model/dataAssembly/Str';
-import {WritableDataAssembly} from '../../../src/model/dataAssembly/WritableDataAssembly';
 import {ModuleTestServer} from '../../../src/moduleTestServer/ModuleTestServer';
 
 chai.use(chaiAsPromised);

@@ -27,9 +27,45 @@
               "namespace_index": "urn:NodeOPCUA-Server-default",
               "node_id": "Service1.CommandEnable"
             },
-            "OpMode": {
+            "StateChannel": {
               "namespace_index": "urn:NodeOPCUA-Server-default",
-              "node_id": "Service1.OpMode"
+              "node_id": "Service1.StateChannel"
+            },
+            "StateOffAut": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOffAut"
+            },
+            "StateOpAut": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOpAut"
+            },
+            "StateAutAut": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateAutAut"
+            },
+            "StateOffOp": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOffOp"
+            },
+            "StateOpOp": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOpOp"
+            },
+            "StateAutOp": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateAutOp"
+            },
+            "StateOffAct": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOffAct"
+            },
+            "StateOpAct": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateOpAct"
+            },
+            "StateAutAct": {
+              "namespace_index": "urn:NodeOPCUA-Server-default",
+              "node_id": "Service1.StateAutAct"
             },
             "StrategyMan": {
               "namespace_index": "urn:NodeOPCUA-Server-default",
