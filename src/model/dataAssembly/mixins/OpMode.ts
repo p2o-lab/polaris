@@ -62,6 +62,9 @@ export type OpModeRuntime = BaseDataAssemblyRuntime & {
     StateOffAct: OpcUaDataItem<boolean>;
 };
 
+/** Add Opmode functionality to OpMode.
+ * detects and supports old and new version of OpMode
+ */
 // tslint:disable-next-line:variable-name
 export function OpModeDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
