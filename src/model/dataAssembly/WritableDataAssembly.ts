@@ -55,7 +55,6 @@ export class WritableDataAssembly extends DataAssembly {
         } else {
             dataItem = this.writeDataItem;
         }
-        console.log(dataItem, this.writeDataItem)
         catDataAssembly.debug(`Set Parameter: ${this.name} (${variable}) -> ${JSON.stringify(paramValue)}`);
         await dataItem.write(paramValue);
     }

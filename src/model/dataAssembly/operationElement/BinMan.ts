@@ -24,13 +24,10 @@
  */
 
 /* tslint:disable:max-classes-per-file */
-import {BaseDataAssemblyRuntime} from '../DataAssembly';
-import {OpcUaDataItem} from '../DataItem';
-import {OpModeDA} from '../mixins/OpMode';
-import {SourceModeDA, SourceModeRuntime} from '../mixins/SourceMode';
-import {WritableDataAssembly} from '../WritableDataAssembly';
-import {OperationElement, OperationElementRuntime} from './OperationElement';
 import {OpcUaConnection} from '../../core/OpcUaConnection';
+import {OpcUaDataItem} from '../DataItem';
+import {SourceModeDA, SourceModeRuntime} from '../mixins/SourceMode';
+import {OperationElement, OperationElementRuntime} from './OperationElement';
 
 export type BinManRuntime = OperationElementRuntime & {
     VMan: OpcUaDataItem<boolean>;

@@ -25,15 +25,11 @@
 
 /* tslint:disable:max-classes-per-file */
 import {OpcUaConnection} from '../../core/OpcUaConnection';
-import {BaseDataAssemblyRuntime} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
-import {OpModeDA, OpModeRuntime} from '../mixins/OpMode';
 import {ScaleSettingsDA, ScaleSettingsRuntime} from '../mixins/ScaleSettings';
 import {SourceModeDA, SourceModeRuntime} from '../mixins/SourceMode';
 import {UnitDA, UnitDataAssemblyRuntime} from '../mixins/Unit';
 import {ValueLimitationDA, ValueLimitationRuntime} from '../mixins/ValueLimitation';
-import {WritableDataAssembly} from '../WritableDataAssembly';
-import {OsLevelDA} from '../mixins/OsLevel';
 import {OperationElement, OperationElementRuntime} from './OperationElement';
 
 export type AnaManRuntime = OperationElementRuntime &
