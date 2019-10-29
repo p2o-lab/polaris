@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,44 +23,54 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
+/* tslint:disable:max-classes-per-file */
+import {BaseDataAssemblyRuntime} from '../DataAssembly';
+import {OpcUaDataItem} from '../DataItem';
+import {OpModeDA} from '../mixins/OpMode';
+import {SourceModeDA, SourceModeRuntime} from '../mixins/SourceMode';
+import {WritableDataAssembly} from '../WritableDataAssembly';
+import {OperationElement, OperationElementRuntime} from './OperationElement';
+import {OpcUaConnection} from '../../core/OpcUaConnection';
 
-export type BinViewRuntime = BaseDataAssemblyRuntime & {
-    V: OpcUaDataItem<boolean>;
+export type BinManRuntime = OperationElementRuntime & {
+    VMan: OpcUaDataItem<boolean>;
+    VRbk: OpcUaDataItem<boolean>;
+    VFbk: OpcUaDataItem<boolean>;
+    VOut: OpcUaDataItem<boolean>;
     VState0: OpcUaDataItem<string>;
     VState1: OpcUaDataItem<string>;
 };
 
-export class BinView extends DataAssembly {
-    public readonly communication: BinViewRuntime;
+export class BinMan extends OperationElement {
+
+    public readonly communication: BinManRuntime;
 
     constructor(options, module) {
         super(options, module);
-        this.communication.V = this.createDataItem('V', 'read', 'boolean');
+        this.communication.VMan = this.createDataItem(['VMan', 'VExt'], 'write', 'boolean');
+        this.communication.VRbk = this.createDataItem('VRbk', 'read', 'boolean');
+        this.communication.VFbk = this.createDataItem('VFbk', 'read', 'boolean');
+        this.communication.VOut = this.createDataItem('VOut', 'read', 'boolean');
         this.communication.VState0 = this.createDataItem('VState0', 'read', 'string');
         this.communication.VState1 = this.createDataItem('VState1', 'read', 'string');
         this.type = 'boolean';
-        this.readDataItem = this.communication.V;
+        this.writeDataItem = this.communication.VMan;
+        this.readDataItem = this.communication.VOut;
     }
+
 }
 
-export type BinMonRuntime = BinViewRuntime & {
-    VFlutTi: OpcUaDataItem<number>;
-    VFlutEn: OpcUaDataItem<boolean>;
-    VFlutCnt: OpcUaDataItem<number>;
-    VFlutAct: OpcUaDataItem<boolean>;
+export type BinManIntRuntime = BinManRuntime & SourceModeRuntime & {
+    VInt: OpcUaDataItem<boolean>;
 };
 
-export class BinMon extends BinView {
+export class BinManInt extends SourceModeDA(BinMan) {
 
-    public readonly communication: BinMonRuntime;
+    public readonly communication: BinManIntRuntime;
 
-    constructor(options, module) {
-        super(options, module);
-        this.communication.VFlutTi = this.createDataItem('VFlutTi', 'read', 'number');
-        this.communication.VFlutEn = this.createDataItem('VFlutEn', 'write', 'boolean');
-        this.communication.VFlutCnt = this.createDataItem('VFlutCnt', 'read', 'number');
-        this.communication.VFlutAct = this.createDataItem('VFlutAct', 'read', 'boolean');
+    constructor(options, connection: OpcUaConnection) {
+        super(options, connection);
+        this.type = 'number';
+        this.communication.VInt = this.createDataItem('VInt', 'read');
     }
 }

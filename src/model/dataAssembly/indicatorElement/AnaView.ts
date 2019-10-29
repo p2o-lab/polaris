@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,22 +23,29 @@
  * SOFTWARE.
  */
 
-import {AnaViewRuntime} from './AnaView';
-import {DataAssembly} from './DataAssembly';
-import {MonitorSettings} from './mixins/MonitorSettings';
-import {ScaleSettingsDA} from './mixins/ScaleSettings';
-import {UnitDA} from './mixins/Unit';
+/* tslint:disable:max-classes-per-file */
+import {OpcUaConnection} from '../../core/OpcUaConnection';
+import {OpcUaDataItem} from '../DataItem';
+import {LimitMonitoringDA} from '../mixins/LimitMonitoring';
+import {ScaleSettingsDA, ScaleSettingsRuntime} from '../mixins/ScaleSettings';
+import {UnitDA, UnitDataAssemblyRuntime} from '../mixins/Unit';
+import {IndicatorElement, IndicatorElementRuntime} from './IndicatorElement';
 
-export class DigView extends ScaleSettingsDA(UnitDA(DataAssembly)) {
+export type AnaViewRuntime = IndicatorElementRuntime & UnitDataAssemblyRuntime & ScaleSettingsRuntime & {
+    V: OpcUaDataItem<number>;
+};
+
+export class AnaView extends ScaleSettingsDA(UnitDA(IndicatorElement)) {
     public readonly communication: AnaViewRuntime;
 
-    constructor(options, connection) {
+    constructor(options, connection: OpcUaConnection) {
         super(options, connection);
         this.communication.V = this.createDataItem('V', 'read');
         this.type = 'number';
         this.readDataItem = this.communication.V;
     }
+
 }
 
-export class DigMon extends MonitorSettings(DigView) {
+export class AnaMon extends LimitMonitoringDA(AnaView) {
 }

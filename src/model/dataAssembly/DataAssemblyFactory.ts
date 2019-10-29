@@ -26,17 +26,17 @@
 import {DataAssemblyOptions} from '@p2olab/polaris-interface';
 import {catDataAssembly} from '../../logging/logging';
 import {OpcUaConnection} from '../core/OpcUaConnection';
-import {AdvAnaOp, AnaServParam, ExtAnaOp, ExtIntAnaOp} from './AnaOp';
-import {AnaMon, AnaView} from './AnaView';
-import {AdvBinOp, BinServParam, ExtBinOp, ExtIntBinOp} from './BinOp';
-import {BinMon, BinView} from './BinView';
+import {AdvAnaOp, AnaServParam, AnaMan, ExtIntAnaOp} from './operationElement/AnaMan';
+import {AnaMon, AnaView} from './indicatorElement/AnaView';
+import {AdvBinOp, BinServParam, BinMan, BinManInt} from './operationElement/BinMan';
+import {BinMon, BinView} from './indicatorElement/BinView';
 import {DataAssembly} from './DataAssembly';
-import {AdvDigOp, DigServParam, ExtDigOp, ExtIntDigOp} from './DigOp';
-import {DigMon, DigView} from './DigView';
-import {AnaDrv, MonAnaDrv} from './Drv';
+import {AdvDigOp, DigServParam, ExtDigOp, DIntManInt} from './operationElement/DIntMan';
+import {DIntMon, DIntView} from './indicatorElement/DIntView';
+import {AnaDrv, MonAnaDrv} from './activeElements/Drv';
 import {ServiceControl} from './ServiceControl';
-import {StrView} from './Str';
-import {AnaVlv, BinVlv, MonAnaVlv, MonBinVlv} from './Vlv';
+import {StrView} from './indicatorElement/StrView';
+import {AnaVlv, BinVlv, MonAnaVlv, MonBinVlv} from './activeElements/Vlv';
 
 export class DataAssemblyFactory {
     public static create(variableOptions: DataAssemblyOptions, connection: OpcUaConnection): DataAssembly {
@@ -44,22 +44,22 @@ export class DataAssemblyFactory {
         const types = {
             'AnaView': AnaView,
             'AnaMon': AnaMon,
-            'ExtAnaOp': ExtAnaOp,
+            'ExtAnaOp': AnaMan,
             'ExtIntAnaOp': ExtIntAnaOp,
             'AdvAnaOp': AdvAnaOp,
             'AnaServParam': AnaServParam,
 
             'BinView': BinView,
             'BinMon': BinMon,
-            'ExtBinOp': ExtBinOp,
-            'ExtIntBinOp': ExtIntBinOp,
+            'ExtBinOp': BinMan,
+            'ExtIntBinOp': BinManInt,
             'AdvBinOp': AdvBinOp,
             'BinServParam': BinServParam,
 
-            'DigView': DigView,
-            'DigMon': DigMon,
+            'DigView': DIntView,
+            'DigMon': DIntMon,
             'ExtDigOp': ExtDigOp,
-            'ExtIntDigOp': ExtIntDigOp,
+            'ExtIntDigOp': DIntManInt,
             'AdvDigOp': AdvDigOp,
             'DigServParam': DigServParam,
 

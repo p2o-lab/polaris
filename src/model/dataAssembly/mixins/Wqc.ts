@@ -23,39 +23,22 @@
  * SOFTWARE.
  */
 
-import {ParameterInterface} from '@p2olab/polaris-interface';
 import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
 import {Constructor} from './mixins';
 
-export type ValueLimitationRuntime = BaseDataAssemblyRuntime & {
-    VMin: OpcUaDataItem<number>;
-    VMax: OpcUaDataItem<number>;
+export type WqcRuntime = BaseDataAssemblyRuntime & {
+    WQC: OpcUaDataItem<number>;
 };
 
-/*
-TODO: in new version there are also other ValueLimitation than VMax and VMin, e.g. RpmMin
- Find a good solution. Same is true for ScaleSettings
- */
-
 // tslint:disable-next-line:variable-name
-export function ValueLimitationDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
-
+export function WqcDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
-        public communication: ValueLimitationRuntime;
+        public communication: WqcRuntime;
 
         constructor(...args: any[]) {
             super(...args);
-            this.communication.VMax = this.createDataItem('VMax', 'read');
-            this.communication.VMin = this.createDataItem('VMin', 'read');
-        }
-
-        public toJson(): ParameterInterface {
-            return {
-                ...super.toJson(),
-                max: this.communication.VMax.value,
-                min: this.communication.VMin.value
-            };
+            this.communication.WQC = this.createDataItem('WQC', 'read', 'number');
         }
     };
 }

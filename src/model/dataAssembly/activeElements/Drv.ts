@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,12 +23,12 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
-import {OpModeRuntime} from './mixins/OpMode';
-import {WritableDataAssembly} from './WritableDataAssembly';
+/* tslint:disable:max-classes-per-file */
+import {OpcUaDataItem} from '../DataItem';
+import {OpModeDA, OpModeRuntime} from '../mixins/OpMode';
+import {ActiveElement, ActiveElementRuntime} from './ActiveElement';
 
-export type AnaDrvRuntime = BaseDataAssemblyRuntime & OpModeRuntime & {
+export type AnaDrvRuntime = ActiveElementRuntime & OpModeRuntime & {
     FwdEn: OpcUaDataItem<boolean>;
     RevEn: OpcUaDataItem<boolean>;
     StopOp: OpcUaDataItem<boolean>;
@@ -65,7 +64,7 @@ export type AnaDrvRuntime = BaseDataAssemblyRuntime & OpModeRuntime & {
     ResetLi: OpcUaDataItem<boolean>;
 };
 
-export class AnaDrv extends WritableDataAssembly {
+export class AnaDrv extends OpModeDA(ActiveElement) {
 
     public readonly communication: AnaDrvRuntime;
 

@@ -23,39 +23,27 @@
  * SOFTWARE.
  */
 
-import {ParameterInterface} from '@p2olab/polaris-interface';
-import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
+/* tslint:disable:max-classes-per-file */
 import {OpcUaDataItem} from '../DataItem';
-import {Constructor} from './mixins';
+import {LimitMonitoringDA} from '../mixins/LimitMonitoring';
+import {ScaleSettingsDA, ScaleSettingsRuntime} from '../mixins/ScaleSettings';
+import {UnitDA, UnitDataAssemblyRuntime} from '../mixins/Unit';
+import {IndicatorElement, IndicatorElementRuntime} from './IndicatorElement';
 
-export type ValueLimitationRuntime = BaseDataAssemblyRuntime & {
-    VMin: OpcUaDataItem<number>;
-    VMax: OpcUaDataItem<number>;
+export type DIntViewRuntime = IndicatorElementRuntime & UnitDataAssemblyRuntime & ScaleSettingsRuntime & {
+    V: OpcUaDataItem<number>;
 };
 
-/*
-TODO: in new version there are also other ValueLimitation than VMax and VMin, e.g. RpmMin
- Find a good solution. Same is true for ScaleSettings
- */
+export class DIntView extends ScaleSettingsDA(UnitDA(IndicatorElement)) {
+    public readonly communication: DIntViewRuntime;
 
-// tslint:disable-next-line:variable-name
-export function ValueLimitationDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
+    constructor(options, connection) {
+        super(options, connection);
+        this.communication.V = this.createDataItem('V', 'read');
+        this.type = 'number';
+        this.readDataItem = this.communication.V;
+    }
+}
 
-    return class extends Base {
-        public communication: ValueLimitationRuntime;
-
-        constructor(...args: any[]) {
-            super(...args);
-            this.communication.VMax = this.createDataItem('VMax', 'read');
-            this.communication.VMin = this.createDataItem('VMin', 'read');
-        }
-
-        public toJson(): ParameterInterface {
-            return {
-                ...super.toJson(),
-                max: this.communication.VMax.value,
-                min: this.communication.VMin.value
-            };
-        }
-    };
+export class DIntMon extends LimitMonitoringDA(DIntView) {
 }

@@ -29,16 +29,17 @@ import * as chaiAsPromised from 'chai-as-promised';
 import * as fs from 'fs';
 import {Module} from '../../../src/model/core/Module';
 import {OpcUaConnection} from '../../../src/model/core/OpcUaConnection';
-import {AdvAnaOp, AnaServParam, ExtAnaOp, ExtIntAnaOp} from '../../../src/model/dataAssembly/AnaOp';
-import {AnaView} from '../../../src/model/dataAssembly/AnaView';
-import {BinMon, BinView} from '../../../src/model/dataAssembly/BinView';
+import {AdvAnaOp, AnaServParam, AnaMan, ExtIntAnaOp} from '../../../src/model/dataAssembly/operationElement/AnaMan';
+import {AnaView} from '../../../src/model/dataAssembly/indicatorElement/AnaView';
+import {BinMon, BinView} from '../../../src/model/dataAssembly/indicatorElement/BinView';
 import {DataAssembly} from '../../../src/model/dataAssembly/DataAssembly';
 import {DataAssemblyFactory} from '../../../src/model/dataAssembly/DataAssemblyFactory';
-import {ExtIntDigOp} from '../../../src/model/dataAssembly/DigOp';
-import {DigMon} from '../../../src/model/dataAssembly/DigView';
-import {MonAnaDrv} from '../../../src/model/dataAssembly/Drv';
+import {DIntManInt} from '../../../src/model/dataAssembly/operationElement/DIntMan';
+import {DIntMon} from '../../../src/model/dataAssembly/indicatorElement/DIntView';
+import {MonAnaDrv} from '../../../src/model/dataAssembly/activeElements/Drv';
 import {ServiceControl} from '../../../src/model/dataAssembly/ServiceControl';
-import {StrView} from '../../../src/model/dataAssembly/Str';
+import {StrView} from '../../../src/model/dataAssembly/indicatorElement/StrView';
+import {WritableDataAssembly} from '../../../src/model/dataAssembly/WritableDataAssembly';
 import {ModuleTestServer} from '../../../src/moduleTestServer/ModuleTestServer';
 
 chai.use(chaiAsPromised);
@@ -288,7 +289,7 @@ describe('DataAssembly', () => {
             const daJson = moduleJsonDosierer.services[0].strategies[1].parameters[0];
             const da = DataAssemblyFactory.create(daJson as any, new OpcUaConnection(null, null));
 
-            expect(da instanceof ExtAnaOp).to.equal(true);
+            expect(da instanceof AnaMan).to.equal(true);
             expect(da instanceof ExtIntAnaOp).to.equal(true);
             expect(da instanceof AdvAnaOp).to.equal(false);
             expect(da instanceof AnaServParam).to.equal(true);
@@ -394,7 +395,7 @@ describe('DataAssembly', () => {
                     VSclMin: {value: 0}
                 } as any
             }, new OpcUaConnection(null, null));
-            expect(da1 instanceof DigMon).to.equal(true);
+            expect(da1 instanceof DIntMon).to.equal(true);
             expect(da1.toJson()).to.deep.equal({
                 name: 'digmon1',
                 readonly: true,
@@ -422,7 +423,7 @@ describe('DataAssembly', () => {
                     VSclMin: {value: 0}
                 } as any
             }, new OpcUaConnection(null, null));
-            expect(da1 instanceof ExtIntDigOp).to.equal(true);
+            expect(da1 instanceof DIntManInt).to.equal(true);
             expect(da1.toJson()).to.deep.equal({
                 name: 'extintdigop1',
                 readonly: false,
@@ -609,7 +610,7 @@ describe('DataAssembly', () => {
 
             await da.subscribe();
             expect(da.name).to.equal('Factor');
-            expect(da instanceof ExtAnaOp).to.equal(true);
+            expect(da instanceof AnaMan).to.equal(true);
             expect(da instanceof ExtIntAnaOp).to.equal(true);
             expect(da instanceof AdvAnaOp).to.equal(false);
 
@@ -679,7 +680,7 @@ describe('DataAssembly', () => {
             };
             const da = DataAssemblyFactory.create(daJson as any, connection);
 
-            expect(da instanceof ExtAnaOp).to.equal(false);
+            expect(da instanceof AnaMan).to.equal(false);
             expect(da instanceof ExtIntAnaOp).to.equal(false);
             expect(da instanceof AdvAnaOp).to.equal(false);
 
