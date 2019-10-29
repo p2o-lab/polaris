@@ -244,10 +244,11 @@ describe('DataAssembly', () => {
             if (da1 instanceof AnaView) {
                 expect(da1.communication.OSLevel).to.have.property('access', 'write');
                 expect(da1.communication.V).to.have.property('access', 'read');
-                expect(da1.communication.VSclMin).to.have.property('value', 0);
-                expect(da1.communication.VSclMax).to.have.property('value', 35.5);
                 expect(da1.communication.V).to.have.property('nodeId',
                     '|var|WAGO 750-8202 PFC200 2ETH RS.Application.Test_AnaView.L001_PV.rPV');
+                expect(da1.communication.VSclMin).to.have.property('value', 0);
+                expect(da1.communication.VSclMax).to.have.property('value', 35.5);
+
                 expect(da1.communication.VUnit).to.have.property('value', 1038);
                 expect(da1.getUnit()).to.equal('L');
 
@@ -615,8 +616,6 @@ describe('DataAssembly', () => {
             expect(da instanceof AnaManInt).to.equal(true);
             expect(da instanceof StrView).to.equal(false);
 
-            expect(da.getSourceMode()).to.equal(SourceMode.Manual);
-            await da.setToInternalSourceMode();
             expect(da.getSourceMode()).to.equal(SourceMode.Intern);
 
             da.setToExternalSourceMode();

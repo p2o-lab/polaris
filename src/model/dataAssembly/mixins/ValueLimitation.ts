@@ -50,12 +50,5 @@ export function ValueLimitationDA<TBase extends Constructor<DataAssembly>>(Base:
             this.communication.VMin = this.createDataItem('VMin', 'read');
         }
 
-        public toJson(): ParameterInterface {
-            return {
-                ...super.toJson(),
-                max: this.communication.VMax ? this.communication.VMax.value : undefined,
-                min: this.communication.VMin ? this.communication.VMin.value : undefined
-            };
-        }
     };
 }
