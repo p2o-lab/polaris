@@ -30,7 +30,7 @@ import {catTestServer} from '../config/logging';
 import {OpMode} from '../model/dataAssembly/mixins/OpMode';
 
 export class ModuleTestOpMode {
-    public opMode: number = 0;
+    public opMode: number = OpMode.srcIntAct | OpMode.stateOffOp;
 
     constructor(namespace: Namespace, rootNode: UAObject, variableName: string) {
         namespace.addVariable({
@@ -54,6 +54,8 @@ export class ModuleTestOpMode {
                         this.opMode = this.opMode | OpMode.srcIntAct;
                     } else if (opModeInt === OpMode.srcExtOp) {
                         this.opMode = this.opMode & ~OpMode.srcIntAct;
+                    } else if (opModeInt === OpMode.srcIntOp) {
+                        this.opMode = this.opMode | OpMode.srcIntAct;
                     } else if (opModeInt === OpMode.stateOffOp) {
                         this.opMode = this.opMode & ~OpMode.stateAutAct;
                         this.opMode = this.opMode & ~OpMode.stateManAct;

@@ -29,16 +29,16 @@ import * as chaiAsPromised from 'chai-as-promised';
 import * as fs from 'fs';
 import {Module} from '../../../src/model/core/Module';
 import {OpcUaConnection} from '../../../src/model/core/OpcUaConnection';
-import {AdvAnaOp, AnaServParam, AnaMan, ExtIntAnaOp} from '../../../src/model/dataAssembly/operationElement/AnaMan';
-import {AnaView} from '../../../src/model/dataAssembly/indicatorElement/AnaView';
-import {BinMon, BinView} from '../../../src/model/dataAssembly/indicatorElement/BinView';
+import {MonAnaDrv} from '../../../src/model/dataAssembly/activeElements/Drv';
 import {DataAssembly} from '../../../src/model/dataAssembly/DataAssembly';
 import {DataAssemblyFactory} from '../../../src/model/dataAssembly/DataAssemblyFactory';
-import {DIntManInt} from '../../../src/model/dataAssembly/operationElement/DIntMan';
+import {AnaView} from '../../../src/model/dataAssembly/indicatorElement/AnaView';
+import {BinMon, BinView} from '../../../src/model/dataAssembly/indicatorElement/BinView';
 import {DIntMon} from '../../../src/model/dataAssembly/indicatorElement/DIntView';
-import {MonAnaDrv} from '../../../src/model/dataAssembly/activeElements/Drv';
-import {ServiceControl} from '../../../src/model/dataAssembly/ServiceControl';
 import {StrView} from '../../../src/model/dataAssembly/indicatorElement/StrView';
+import {AnaMan, AnaManInt} from '../../../src/model/dataAssembly/operationElement/AnaMan';
+import {DIntManInt} from '../../../src/model/dataAssembly/operationElement/DIntMan';
+import {ServiceControl} from '../../../src/model/dataAssembly/ServiceControl';
 import {WritableDataAssembly} from '../../../src/model/dataAssembly/WritableDataAssembly';
 import {ModuleTestServer} from '../../../src/moduleTestServer/ModuleTestServer';
 
@@ -237,8 +237,8 @@ describe('DataAssembly', () => {
             const da2 = DataAssemblyFactory.create(daJson2, new OpcUaConnection(null, null));
 
             expect(da1 instanceof AnaView).to.equal(true);
-            expect(da1 instanceof ExtIntAnaOp).to.equal(false);
-            expect(da1 instanceof AdvAnaOp).to.equal(false);
+            expect(da1 instanceof AnaManInt).to.equal(false);
+            expect(da1 instanceof DIntManInt).to.equal(false);
 
             expect(da1 instanceof AnaView).to.equals(true);
             if (da1 instanceof AnaView) {
@@ -290,11 +290,11 @@ describe('DataAssembly', () => {
             const da = DataAssemblyFactory.create(daJson as any, new OpcUaConnection(null, null));
 
             expect(da instanceof AnaMan).to.equal(true);
-            expect(da instanceof ExtIntAnaOp).to.equal(true);
-            expect(da instanceof AdvAnaOp).to.equal(false);
-            expect(da instanceof AnaServParam).to.equal(true);
+            expect(da instanceof AnaManInt).to.equal(true);
+            expect(da instanceof BinMon).to.equal(false);
+            expect(da instanceof WritableDataAssembly).to.equal(true);
 
-            if (da instanceof AnaServParam) {
+            if (da instanceof AnaManInt) {
                 expect(da.communication.VOut).to.have.property('nodeId',
                     '|var|WAGO 750-8202 PFC200 2ETH RS.App_Dosing.Services.Fill.SetVolume.VOut');
                 expect(da.communication.VInt).to.have.property('nodeId',
@@ -307,7 +307,7 @@ describe('DataAssembly', () => {
                     '|var|WAGO 750-8202 PFC200 2ETH RS.App_Dosing.Services.Fill.SetVolume.WQC');
                 expect(da.communication.OpMode).to.have.property('nodeId',
                     '|var|WAGO 750-8202 PFC200 2ETH RS.App_Dosing.Services.Fill.SetVolume.OpMode.binary');
-                expect(da.communication.VExt).to.have.property('nodeId',
+                expect(da.communication.VMan).to.have.property('nodeId',
                     '|var|WAGO 750-8202 PFC200 2ETH RS.App_Dosing.Services.Fill.SetVolume.VExt');
                 expect(da.communication.VSclMax).to.have.property('nodeId',
                     '|var|WAGO 750-8202 PFC200 2ETH RS.App_Dosing.Services.Fill.SetVolume.VSclMax');
@@ -419,8 +419,8 @@ describe('DataAssembly', () => {
                     WQC: null,
                     VRbk: {value: 23},
                     VUnit: {value: 1038},
-                    VSclMax: {value: 100},
-                    VSclMin: {value: 0}
+                    VMax: {value: 100},
+                    VMin: {value: 0}
                 } as any
             }, new OpcUaConnection(null, null));
             expect(da1 instanceof DIntManInt).to.equal(true);
@@ -466,7 +466,8 @@ describe('DataAssembly', () => {
         let moduleServer: ModuleTestServer;
         let connection: OpcUaConnection;
 
-        beforeEach(async () => {
+        beforeEach(async function() {
+            this.timeout(5000);
             moduleServer = new ModuleTestServer();
             await moduleServer.start();
 
@@ -482,7 +483,7 @@ describe('DataAssembly', () => {
         it('should subscribe and unsubscribe from ExtIntAnaOp', async () => {
             const daJson = JSON.parse(fs.readFileSync('assets/modules/module_testserver_1.0.0.json').toString())
                 .modules[0].services[0].strategies[0].parameters[0];
-            const da = DataAssemblyFactory.create(daJson as any, connection) as ExtIntAnaOp;
+            const da = DataAssemblyFactory.create(daJson as any, connection) as AnaManInt;
 
             await da.subscribe();
 
@@ -494,7 +495,7 @@ describe('DataAssembly', () => {
             }));
             expect(da.writeDataItem.value).to.equal(2);
 
-            await da.setParameter(3, 'VExt');
+            await da.setParameter(3, 'VMan');
             await new Promise((resolve) => da.on('changed', () => {
                 if (da.writeDataItem.value === 3) {
                     resolve();
@@ -512,7 +513,7 @@ describe('DataAssembly', () => {
         it('should set value', async () => {
             const daJson = JSON.parse(fs.readFileSync('assets/modules/module_testserver_1.0.0.json').toString())
                 .modules[0].services[0].strategies[0].parameters[0];
-            const da = DataAssemblyFactory.create(daJson as any, connection) as ExtIntAnaOp;
+            const da = DataAssemblyFactory.create(daJson as any, connection) as AnaManInt;
 
             await da.subscribe();
 
@@ -606,50 +607,33 @@ describe('DataAssembly', () => {
         it('should create ExtIntAnaOp', async () => {
             const daJson = JSON.parse(fs.readFileSync('assets/modules/module_testserver_1.0.0.json').toString())
                 .modules[0].services[0].strategies[0].parameters[0];
-            const da = DataAssemblyFactory.create(daJson as any, connection) as ExtIntAnaOp;
+            const da = DataAssemblyFactory.create(daJson as any, connection) as AnaManInt;
 
             await da.subscribe();
             expect(da.name).to.equal('Factor');
             expect(da instanceof AnaMan).to.equal(true);
-            expect(da instanceof ExtIntAnaOp).to.equal(true);
-            expect(da instanceof AdvAnaOp).to.equal(false);
+            expect(da instanceof AnaManInt).to.equal(true);
+            expect(da instanceof StrView).to.equal(false);
 
-            await da.waitForOpModeToPassSpecificTest(OperationMode.Offline);
-            expect(da.getOperationMode()).to.equal(OperationMode.Offline);
-            expect(da.getOperationMode()).to.equal('offline');
-
-            expect(da.classicOpMode).to.equal(true);
-            await da.writeOpMode(OperationMode.Operator);
-            await da.waitForOpModeToPassSpecificTest(OperationMode.Operator);
-            expect(da.getOperationMode()).to.equal('operator');
-
-            da.setToAutomaticOperationMode();
-            await da.waitForOpModeToPassSpecificTest(OperationMode.Automatic);
-            expect(da.getOperationMode()).to.equal('automatic');
+            expect(da.getSourceMode()).to.equal(SourceMode.Manual);
+            await da.setToInternalSourceMode();
+            expect(da.getSourceMode()).to.equal(SourceMode.Intern);
 
             da.setToExternalSourceMode();
             await da.waitForSourceModeToPassSpecificTest(SourceMode.Manual);
             expect(da.getSourceMode()).to.equal(SourceMode.Manual);
             expect(da.getSourceMode()).to.equal('manual');
 
-            if (da instanceof ExtIntAnaOp) {
-                expect(da.communication.VOut).to.have.property('nodeId', 'Service1.Factor.V');
-                expect(da.communication.VOut).to.have.property('value', 2);
-                const json = da.toJson();
-                expect(json).to.have.property('name', 'Factor');
-                expect(json).to.have.property('readonly', false);
-                expect(json).to.have.property('type', 'number');
-                expect(json).to.have.property('value', 2);
-                expect(json).to.have.property('min');
-                expect(json).to.have.property('max');
-                expect(json).to.have.property('unit');
-            }
-
-            await da.setToManualOperationMode();
-            expect(da.getOperationMode()).to.equal(OperationMode.Operator);
-
-            await da.setToAutomaticOperationMode();
-            expect(da.getOperationMode()).to.equal(OperationMode.Automatic);
+            expect(da.communication.VOut).to.have.property('nodeId', 'Service1.Factor.V');
+            expect(da.communication.VOut).to.have.property('value', 2);
+            const json = da.toJson();
+            expect(json).to.have.property('name', 'Factor');
+            expect(json).to.have.property('readonly', false);
+            expect(json).to.have.property('type', 'number');
+            expect(json).to.have.property('value', 2);
+            expect(json).to.have.property('min');
+            expect(json).to.have.property('max');
+            expect(json).to.have.property('unit');
         }).timeout(8000);
 
         it('should create StrView', async () => {
@@ -681,8 +665,8 @@ describe('DataAssembly', () => {
             const da = DataAssemblyFactory.create(daJson as any, connection);
 
             expect(da instanceof AnaMan).to.equal(false);
-            expect(da instanceof ExtIntAnaOp).to.equal(false);
-            expect(da instanceof AdvAnaOp).to.equal(false);
+            expect(da instanceof AnaManInt).to.equal(false);
+            expect(da instanceof BinView).to.equal(false);
 
             expect(da instanceof StrView).to.equal(true);
 

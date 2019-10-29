@@ -64,7 +64,7 @@ export type AnaManIntRuntime = AnaManRuntime & SourceModeRuntime & {
     VInt: OpcUaDataItem<number>;
 };
 
-export class ExtIntAnaOp extends SourceModeDA(AnaMan) {
+export class AnaManInt extends SourceModeDA(AnaMan) {
 
     public readonly communication: AnaManIntRuntime;
 
