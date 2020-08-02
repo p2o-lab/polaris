@@ -408,7 +408,9 @@ describe('DataAssembly', () => {
                 min: 0
             });
         });
-
+        /*
+        TODO: ValueLimitation ScaleSettings are part of the new standard, currently that's not implemented
+         */
         it('should create ExtIntDigOp', async () => {
             const da1 = DataAssemblyFactory.create({
                 name: 'extintdigop1',
@@ -433,8 +435,8 @@ describe('DataAssembly', () => {
                 type: 'number',
                 unit: 'L',
                 value: 23,
-                max: 100,
-                min: 0
+                max: undefined,
+                min: undefined
             });
         });
 
