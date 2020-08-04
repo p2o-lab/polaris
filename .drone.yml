@@ -1,80 +1,102 @@
 ---
-kind: pipeline
-name: default
+clone:
+  git:
+    image: plugins/git
+    skip_verify: true
 
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-
-- name: build
-  image: node:8-jessie
-  commands:
-  - npm install
-  - npm run-script apidoc build
-
-- name: test
-  image: node:8-jessie
-  commands:
-  - export LOGLEVEL=error
-  - npm test
-  - node_modules/.bin/nyc report --reporter=json > coverage.json
-
-- name: codecov
-  image: robertstettner/drone-codecov
-  settings:
-    token:
-      from_secret: codecov_token
-
-- name: docker
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: p2olab/polaris-backend
-    auto_tag: true
-
-- name: docker-arm
-  image: plugins/docker
-  settings:
-    dockerfile: Dockerfile.arm
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: p2olab/polaris-backend
-    auto_tag: true
-    auto_tag_suffix: arm
-
-- name: docker-test-pea
-  image: plugins/docker
-  settings:
-    dockerfile: Dockerfile.test-pea
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: p2olab/test-pea
-    auto_tag: true
-
-- name: notify
-  image: drillster/drone-email
-  settings:
-    from: "plt@mailbox.tu-dresden.de"
-    host: mail.zih.tu-dresden.de
-    password:
-      from_secret: email_password
-    username: plt
-  when:
-    status:
-    - changed
-    - failure
-
+pipeline:
+  lint:
+    image: node:8-jessie
+    commands:
+      - npm install
+      - npm run lint
+  build:
+    image: node:8-jessie
+    commands:
+      - npm run-script apidoc build
+  test:
+    image: node:8-jessie
+    commands:
+      - export LOGLEVEL=error
+      - npm test
+      - node_modules/.bin/nyc report --reporter=json > coverage.json
 ---
-kind: signature
-hmac: 205ef1910fa13168e9bd50e221f4ea097111adc334da890bebac4dc5e6c021cd
+#kind: pipeline
+#name: default
 
-...
+#platform:
+#  os: linux
+#  arch: amd64
+
+#steps:
+
+#- name: build
+#  image: node:8-jessie
+#  commands:
+#  - npm install
+#  - npm run-script apidoc build
+
+#- name: test
+#  image: node:8-jessie
+#  commands:
+#  - export LOGLEVEL=error
+#  - npm test
+#  - node_modules/.bin/nyc report --reporter=json > coverage.json
+
+#- name: codecov
+#  image: robertstettner/drone-codecov
+#  settings:
+#    token:
+#      from_secret: codecov_token
+
+#- name: docker
+#  image: plugins/docker
+#  settings:
+#    username:
+#      from_secret: docker_username
+#    password:
+#      from_secret: docker_password
+#    repo: p2olab/polaris-backend
+#    auto_tag: true
+
+#- name: docker-arm
+#  image: plugins/docker
+#  settings:
+#    dockerfile: Dockerfile.arm
+#    username:
+#      from_secret: docker_username
+#    password:
+#      from_secret: docker_password
+#    repo: p2olab/polaris-backend
+#    auto_tag: true
+#    auto_tag_suffix: arm
+
+#- name: docker-test-pea
+#  image: plugins/docker
+#  settings:
+#    dockerfile: Dockerfile.test-pea
+#    username:
+#      from_secret: docker_username
+#    password:
+#      from_secret: docker_password
+#    repo: p2olab/test-pea
+#    auto_tag: true
+
+# - name: notify
+#  image: drillster/drone-email
+#  settings:
+#    from: "plt@mailbox.tu-dresden.de"
+#    host: mail.zih.tu-dresden.de
+#    password:
+#      from_secret: email_password
+#    username: plt
+#  when:
+#    status:
+#    - changed
+#    - failure
+
+#---
+#kind: signature
+#hmac: 205ef1910fa13168e9bd50e221f4ea097111adc334da890bebac4dc5e6c021cd
+
+#...

@@ -1,12 +1,14 @@
 {
   "name": "@p2olab/polaris-backend",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "main": "./build/src/index.js",
   "types": "./build/src/index.d.ts",
   "description": "Server backend for POL recipe execution engine",
-  "author": "Markus Graube <markus.graube@tu-dresden.de>",
-  "repository": "https://github.com/p2o-lab/polaris-backend.git",
-  "homepage": "https://github.com/p2o-lab/polaris-backend",
+  "author": "Julius Lorenz <julius.lorenz@tu-dresden.de>",
+  "repository": {
+    "type": "git",
+    "url": "svn@dev.plt.et.tu-dresden.de:modulare-automation/polaris-backend.git"
+  },
   "license": "MIT",
   "scripts": {
     "start": "ts-node ./src/index.ts",
@@ -22,12 +24,17 @@
     "polaris-backend": "./bin/polaris-backend",
     "test-pea": "./bin/test-pea"
   },
+  "keywords": [
+    "Modulare Automation",
+    "PLT/SVT",
+    "Polaris"
+  ],
   "files": [
     "build",
     "assets"
   ],
   "dependencies": {
-    "@p2olab/polaris-interface": "^2.3.0",
+    "@p2olab/polaris-interface": "^3.0.0",
     "assign-deep": "^1.0.1",
     "command-line-args": "^5.1.1",
     "command-line-usage": "^6.0.2",
