@@ -5,14 +5,16 @@ clone:
     skip_verify: true
 
 pipeline:
-  lint:
-    image: node:8-jessie
-    commands:
-      - npm install
-      - npm run lint
+#  lint:
+#   image: node:8-jessie
+#    commands:
+#      - npm install
+#      - npm run lint
+
   build:
     image: node:8-jessie
     commands:
+      - npm install
       - npm run-script apidoc build
   test:
     image: node:8-jessie
