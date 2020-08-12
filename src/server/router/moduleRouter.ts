@@ -86,6 +86,17 @@ moduleRouter.put('', (req, res) => {
 });
 
 /**
+ * @api {put} /viaPiMAd Add module via PiMAd.
+ * @apiName PutModule
+ * @apiGroup Module
+ * @apiParam {ModuleOptions} module Module to be added.
+ */
+moduleRouter.put('/viaPiMAd', (req, res) => {
+    catServer.info(`Load module via PiMAd`);
+    res.status(200).send('PiMAd-Hello-World\n');
+});
+
+/**
  * @api {delete} /module/:id    Delete module
  * @apiName DeleteModule
  * @apiGroup Module
