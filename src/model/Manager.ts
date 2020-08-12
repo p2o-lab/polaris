@@ -30,6 +30,7 @@ import {
     VirtualServiceInterface
 } from '@p2olab/polaris-interface';
 import {EventEmitter} from 'events';
+import {PEAPool, PEAPoolVendor} from 'PiMAd-core';
 import StrictEventEmitter from 'strict-event-emitter-types';
 import {ServiceLogEntry} from '../logging/archive';
 import {catManager} from '../logging/logging';
@@ -89,9 +90,12 @@ export class Manager extends (EventEmitter as new() => ManagerEmitter) {
     private _autoreset: boolean = true;
     // autoreset timeout in milliseconds
     private _autoresetTimeout: number = 500;
+    // PiMAd-core
+    private peaPool: PEAPool;
 
     constructor() {
         super();
+        this.peaPool = new PEAPoolVendor().buyDependencyPEAPool();
         this.player = new Player()
             .on('started', () => {
                 this.emit('notify', { message: 'player', player: this.player.json()});
