@@ -76,22 +76,22 @@ export function OpModeDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
             super(...args);
             if (args[0].communication.OpMode) {
                 this.classicOpMode = true;
-                this.createDataItem(args[0], 'OpMode', 'write');
+                this.createDataItem('OpMode', 'write');
             } else {
                 this.classicOpMode = false;
-                this.createDataItem(args[0], 'StateChannel', 'read', 'boolean');
+                this.communication.StateChannel = this.createDataItem('StateChannel', 'read', 'boolean');
 
-                this.createDataItem(args[0], 'StateOffAut', 'read', 'boolean');
-                this.createDataItem(args[0], 'StateOpAut', 'read', 'boolean');
-                this.createDataItem(args[0], 'StateAutAut', 'read', 'boolean');
+                this.communication.StateOffAut = this.createDataItem('StateOffAut', 'read', 'boolean');
+                this.communication.StateOpAut = this.createDataItem('StateOpAut', 'read', 'boolean');
+                this.communication.StateAutAut = this.createDataItem('StateAutAut', 'read', 'boolean');
 
-                this.createDataItem(args[0], 'StateOffOp', 'write', 'boolean');
-                this.createDataItem(args[0], 'StateOpOp', 'write', 'boolean');
-                this.createDataItem(args[0], 'StateAutOp', 'write', 'boolean');
+                this.communication.StateOffOp = this.createDataItem('StateOffOp', 'write', 'boolean');
+                this.communication.StateOpOp = this.createDataItem('StateOpOp', 'write', 'boolean');
+                this.communication.StateAutOp = this.createDataItem('StateAutOp', 'write', 'boolean');
 
-                this.createDataItem(args[0], 'StateOffAct', 'read', 'boolean');
-                this.createDataItem(args[0], 'StateOpAct', 'read', 'boolean');
-                this.createDataItem(args[0], 'StateAutAct', 'read', 'boolean');
+                this.communication.StateOffAct = this.createDataItem('StateOffAct', 'read', 'boolean');
+                this.communication.StateOpAct = this.createDataItem('StateOpAct', 'read', 'boolean');
+                this.communication.StateAutAct = this.createDataItem('StateAutAct', 'read', 'boolean');
             }
         }
 

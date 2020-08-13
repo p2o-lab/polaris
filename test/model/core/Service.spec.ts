@@ -54,7 +54,7 @@ describe('Service', () => {
         it('should fail with missing module', () => {
             expect(() => new Service(
                 {name: 'test', parameters: null, communication: null, strategies: null}, null, null)
-            ).to.throw('No module');
+            ).to.throw('No connection defined for creating data assembly');
         });
 
     });
@@ -74,15 +74,6 @@ describe('Service', () => {
                 .modules[0].services[0];
         const service = new Service(json, new OpcUaConnection(null, null), 'root');
         expect(service.name).to.equal('Service1');
-    });
-
-    it('should reject creating it with not all variables defined for serviceControl', () => {
-        const json: ServiceOptions =
-            parseJson(fs.readFileSync('assets/modules/module_testserver_1.0.0.json', 'utf8'), null, 60)
-                .modules[0].services[0];
-        json.communication.OpMode = null;
-        expect(() => new Service(json, new OpcUaConnection(null, null), 'root'))
-            .to.throw('Service Control not fully defined in options');
     });
 
     context('with ModuleTestServer', () => {
@@ -155,7 +146,7 @@ describe('Service', () => {
 
         it('should provide correct JSON', () => {
             expect(ServiceState[service.state]).to.equal('IDLE');
-            const result = service.getOverview();
+            const result = service.json();
             expect(result).to.have.property('status', 'IDLE');
         });
 
@@ -217,7 +208,7 @@ describe('Service', () => {
         });
 
         it('full service state cycle', async () => {
-            let result = service.getOverview();
+            let result = service.json();
             expect(result).to.have.property('status', 'IDLE');
             expect(result).to.have.property('controlEnable')
                 .to.deep.equal({
@@ -239,7 +230,7 @@ describe('Service', () => {
 
             await service.setOperationMode();
 
-            result = service.getOverview();
+            result = service.json();
             expect(result).to.have.property('status', 'IDLE');
             expect(result).to.have.property('controlEnable')
                 .to.deep.equal({

@@ -37,6 +37,7 @@ import {catService} from '../../logging/logging';
 import {DataAssembly} from '../dataAssembly/DataAssembly';
 import {DataAssemblyFactory} from '../dataAssembly/DataAssemblyFactory';
 import {ServiceControl} from '../dataAssembly/ServiceControl';
+import {WritableDataAssembly} from '../dataAssembly/WritableDataAssembly';
 import {BaseService, BaseServiceEvents} from './BaseService';
 import {controlEnableToJson, ServiceControlEnable, ServiceMtpCommand, ServiceState} from './enum';
 import {Module} from './Module';
@@ -194,7 +195,7 @@ export class Service extends BaseService {
     /**
      * get JSON overview about service and its state, opMode, strategies, parameters and controlEnable
      */
-    public getOverview(): ServiceInterface {
+    public json(): ServiceInterface {
         const currentStrategy = this.getCurrentStrategy();
         return {
             name: this.name,
@@ -326,7 +327,7 @@ export class Service extends BaseService {
         }
     }
 
-    public findInputParameter(parameterName: string): DataAssembly {
+    public findInputParameter(parameterName: string): WritableDataAssembly {
         const parameterList = [].concat(
             this.parameters,
             this.getCurrentStrategy().parameters,

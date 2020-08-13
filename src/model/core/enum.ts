@@ -95,8 +95,8 @@ export enum SourceMode {
     Manual,
     Intern
 }
-
-export function opModetoJson(opMode: OperationMode): OpModeInterface {
+// TODO: Implement Interface and uncomment section
+/*export function opModetoJson(opMode: OperationMode): OpModeInterface {
     let state;
     if (isManualState(opMode)) {
         state = 'operator';
@@ -106,7 +106,7 @@ export function opModetoJson(opMode: OperationMode): OpModeInterface {
         state = 'offline';
     }
     return {state: state, source: undefined};
-}
+}*/
 
 export function isOffState(opMode: OperationMode): boolean {
     return (opMode === OperationMode.Offline);
