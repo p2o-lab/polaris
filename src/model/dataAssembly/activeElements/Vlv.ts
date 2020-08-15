@@ -24,7 +24,6 @@
  */
 
 /* tslint:disable:max-classes-per-file */
-import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
 import {OpModeDA, OpModeRuntime} from '../mixins/OpMode';
 import {ActiveElement, ActiveElementRuntime} from './ActiveElement';
@@ -96,6 +95,8 @@ export type AnaVlvRuntime = ActiveElementRuntime & OpModeRuntime & {
     Protect: OpcUaDataItem<boolean>;
     ResetOp: OpcUaDataItem<boolean>;
     ResetLi: OpcUaDataItem<boolean>;
+    OpenAct: OpcUaDataItem<boolean>;
+    CloseAct: OpcUaDataItem<boolean>;
 };
 
 export class AnaVlv extends OpModeDA(ActiveElement) {
@@ -109,12 +110,12 @@ export type MonAnaVlvRuntime = AnaVlvRuntime & {
     MonDynErr: OpcUaDataItem<boolean>;
     MonStatTi: OpcUaDataItem<number>;
     MonDynTi: OpcUaDataItem<number>;
-    PosOpngFbk: OpcUaDataItem<number>;
-    PosClsngFbk: OpcUaDataItem<number>;
+    // PosOpngFbk: OpcUaDataItem<number>;
+    // PosClsngFbk: OpcUaDataItem<number>;
     PosReachedFbk: OpcUaDataItem<boolean>;
     PosTolerance: OpcUaDataItem<number>;
-    PosDefClose: OpcUaDataItem<number>;
-    PosDefOpen: OpcUaDataItem<number>;
+    // PosDefClose: OpcUaDataItem<number>;
+    // PosDefOpen: OpcUaDataItem<number>;
     MonPosTi: OpcUaDataItem<number>;
     MonPosErr: OpcUaDataItem<boolean>;
 };

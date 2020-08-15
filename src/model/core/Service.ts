@@ -34,7 +34,6 @@ import {EventEmitter} from 'events';
 import StrictEventEmitter from 'strict-event-emitter-types';
 import {Category} from 'typescript-logging';
 import {catService} from '../../logging/logging';
-import {DataAssembly} from '../dataAssembly/DataAssembly';
 import {DataAssemblyFactory} from '../dataAssembly/DataAssemblyFactory';
 import {ServiceControl} from '../dataAssembly/ServiceControl';
 import {WritableDataAssembly} from '../dataAssembly/WritableDataAssembly';
@@ -86,7 +85,7 @@ export class Service extends BaseService {
 
     public readonly eventEmitter: ServiceEmitter;
     public readonly strategies: Strategy[] = [];
-    public readonly parameters: DataAssembly[] = [];
+    public readonly parameters: WritableDataAssembly[] = [];
     public readonly connection: OpcUaConnection;
     // use ControlExt (true) or ControlOp (false)
     public readonly automaticMode: boolean;
@@ -119,7 +118,7 @@ export class Service extends BaseService {
 
         if (serviceOptions.parameters) {
             this.parameters = serviceOptions.parameters
-                .map((options) => DataAssemblyFactory.create(options, connection));
+                .map((options) => DataAssemblyFactory.create(options, connection) as WritableDataAssembly);
         }
     }
 
