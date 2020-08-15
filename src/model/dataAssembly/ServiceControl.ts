@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime} from './DataAssembly';
+import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
 import {OpcUaDataItem} from './DataItem';
 import {OpModeDA, OpModeRuntime} from './mixins/OpMode';
 import {SourceModeDA, SourceModeRuntime} from './mixins/SourceMode';

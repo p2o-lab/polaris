@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,16 +23,17 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
+/* tslint:disable:max-classes-per-file */
+import {OpcUaDataItem} from '../DataItem';
+import {IndicatorElement, IndicatorElementRuntime} from './IndicatorElement';
 
-export type BinViewRuntime = BaseDataAssemblyRuntime & {
+export type BinViewRuntime = IndicatorElementRuntime & {
     V: OpcUaDataItem<boolean>;
     VState0: OpcUaDataItem<string>;
     VState1: OpcUaDataItem<string>;
 };
 
-export class BinView extends DataAssembly {
+export class BinView extends IndicatorElement {
     public readonly communication: BinViewRuntime;
 
     constructor(options, module) {
@@ -47,8 +47,8 @@ export class BinView extends DataAssembly {
 }
 
 export type BinMonRuntime = BinViewRuntime & {
-    VFlutTi: OpcUaDataItem<number>;
     VFlutEn: OpcUaDataItem<boolean>;
+    VFlutTi: OpcUaDataItem<number>;
     VFlutCnt: OpcUaDataItem<number>;
     VFlutAct: OpcUaDataItem<boolean>;
 };
@@ -59,9 +59,9 @@ export class BinMon extends BinView {
 
     constructor(options, module) {
         super(options, module);
-        this.communication.VFlutTi = this.createDataItem('VFlutTi', 'read', 'number');
-        this.communication.VFlutEn = this.createDataItem('VFlutEn', 'write', 'boolean');
-        this.communication.VFlutCnt = this.createDataItem('VFlutCnt', 'read', 'number');
+        this.communication.VFlutEn = this.createDataItem('VFlutEn', 'read', 'boolean');
+        this.communication.VFlutTi = this.createDataItem('VFlutTi', 'write', 'number');
+        this.communication.VFlutCnt = this.createDataItem('VFlutCnt', 'write', 'number');
         this.communication.VFlutAct = this.createDataItem('VFlutAct', 'read', 'boolean');
     }
 }

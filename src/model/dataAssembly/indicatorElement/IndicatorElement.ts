@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,34 +23,11 @@
  * SOFTWARE.
  */
 
-import {AnaOpRuntime} from './AnaOp';
-import {OpModeDA} from './mixins/OpMode';
-import {ScaleSettingsDA} from './mixins/ScaleSettings';
-import {SourceModeDA} from './mixins/SourceMode';
-import {UnitDA} from './mixins/Unit';
-import {WritableDataAssembly} from './WritableDataAssembly';
+import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
+import {WqcDA, WqcRuntime} from '../mixins/Wqc';
 
-export class ExtDigOp extends ScaleSettingsDA(UnitDA(WritableDataAssembly)) {
-    public readonly communication: AnaOpRuntime;
+export type IndicatorElementRuntime = BaseDataAssemblyRuntime & WqcRuntime;
 
-    constructor(options, connection) {
-        super(options, connection);
-        this.communication.VOut = this.createDataItem('VOut', 'read');
-        this.communication.VRbk = this.createDataItem('VRbk', 'read');
-        this.communication.VExt = this.createDataItem('VExt', 'write');
-        this.type = 'number';
-        this.writeDataItem = this.communication.VExt;
-        this.readDataItem = this.communication.VRbk;
-    }
-}
+export class IndicatorElement extends WqcDA(DataAssembly) {
 
-export class ExtIntDigOp extends OpModeDA(SourceModeDA(ExtDigOp)) {
-
-}
-
-export class AdvDigOp extends ExtIntDigOp {
-
-}
-
-export class DigServParam extends ExtIntDigOp {
 }

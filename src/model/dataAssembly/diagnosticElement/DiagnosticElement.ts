@@ -23,26 +23,13 @@
  * SOFTWARE.
  */
 
-import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
+import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
+import {OsLevelDA, OsLevelRuntime} from '../mixins/OsLevel';
+import {WqcDA, WqcRuntime} from '../mixins/Wqc';
+import {WritableDataAssembly} from '../WritableDataAssembly';
 
-export type StrRuntime = BaseDataAssemblyRuntime & {
-    Text: OpcUaDataItem<string>;
-};
+export type DiagnosticElementRuntime = BaseDataAssemblyRuntime & WqcRuntime;
 
-export class StrView extends DataAssembly {
-
-    public readonly communication: StrRuntime;
-
-    get Text() {
-        return this.communication.Text;
-    }
-
-    constructor(options, connection) {
-        super(options, connection);
-        this.communication.Text = this.createDataItem('Text', 'read', 'string');
-        this.type = 'string';
-        this.readDataItem = this.communication.Text;
-    }
+export class DiagnosticElement extends WqcDA(DataAssembly) {
 
 }

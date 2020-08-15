@@ -27,7 +27,7 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as fs from 'fs';
 import {Module} from '../../../src/model/core/Module';
-import {StrView} from '../../../src/model/dataAssembly/Str';
+import {StrView} from '../../../src/model/dataAssembly/indicatorElement/StrView';
 import {ModuleTestServer} from '../../../src/moduleTestServer/ModuleTestServer';
 
 chai.use(chaiAsPromised);

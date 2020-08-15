@@ -23,32 +23,33 @@
  * SOFTWARE.
  */
 
-import {ParameterInterface} from '@p2olab/polaris-interface';
 import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
 import {Constructor} from './mixins';
 
-export type ValueLimitationRuntime = BaseDataAssemblyRuntime & {
-    VMin: OpcUaDataItem<number>;
-    VMax: OpcUaDataItem<number>;
+export type FeedbackMonitoringRuntime = BaseDataAssemblyRuntime & {
+    MonEn: OpcUaDataItem<boolean>;
+    MonSafePos: OpcUaDataItem<boolean>;
+    MonStatErr: OpcUaDataItem<boolean>;
+    MonDynErr: OpcUaDataItem<boolean>;
+    MonStatTi: OpcUaDataItem<number>;
+    MonDynTi: OpcUaDataItem<number>;
 };
 
-/*
-TODO: in new version there are also other ValueLimitation than VMax and VMin, e.g. RpmMin
- Find a good solution. Same is true for ScaleSettings
- */
-
 // tslint:disable-next-line:variable-name
-export function ValueLimitationDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
-
+export function FeedbackMonitoringDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
-        public communication: ValueLimitationRuntime;
+        public communication: FeedbackMonitoringRuntime;
 
         constructor(...args: any[]) {
             super(...args);
-            this.communication.VMax = this.createDataItem('VMax', 'read');
-            this.communication.VMin = this.createDataItem('VMin', 'read');
-        }
 
+            this.communication.MonEn = this.createDataItem('MonEn', 'write', 'boolean');
+            this.communication.MonSafePos = this.createDataItem('MonSafePos', 'read', 'boolean');
+            this.communication.MonStatErr = this.createDataItem('MonStatErr', 'read', 'boolean');
+            this.communication.MonDynErr = this.createDataItem('MonDynErr', 'read', 'boolean');
+            this.communication.MonStatTi = this.createDataItem('MonStatTi', 'read', 'number');
+            this.communication.MonDynTi = this.createDataItem('MonDynTi', 'read', 'number');
+        }
     };
 }

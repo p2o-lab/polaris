@@ -87,6 +87,8 @@ export class Service extends BaseService {
     public readonly strategies: Strategy[] = [];
     public readonly parameters: WritableDataAssembly[] = [];
     public readonly connection: OpcUaConnection;
+    // use ControlExt (true) or ControlOp (false)
+    public readonly automaticMode: boolean;
     public readonly serviceControl: ServiceControl;
     private readonly logger: Category;
     private serviceParametersEventEmitters: EventEmitter[];
@@ -99,6 +101,8 @@ export class Service extends BaseService {
         if (!serviceOptions.name) {
             throw new Error('No service name provided');
         }
+
+        this.automaticMode = true;
         this.connection = connection;
         this.serviceParametersEventEmitters = [];
 
@@ -207,6 +211,29 @@ export class Service extends BaseService {
         };
     }
 
+    /**
+     * Set strategy and strategy parameters and execute a command for service on PEA
+     * @param {ServiceCommand} command  command to be executed on PEA
+     * @param {Strategy}    strategy  strategy to be set on PEA
+     * @param {ParameterOptions[]} parameters     parameters to be set on PEA
+     * @returns {Promise<void>}
+     */
+    public async executeCommandWithStrategyAndParameter(command: ServiceCommand,
+                                                        strategy: Strategy,
+                                                        parameters: ParameterOptions[]): Promise<void> {
+        if (!this.connection.isConnected()) {
+            throw new Error('Module is not connected');
+        }
+        this.logger.info(`[${this.qualifiedName}] Execute ${command} (${strategy ? strategy.name : ''})`);
+        if (strategy) {
+            await this.setStrategy(strategy);
+        }
+        if (parameters) {
+            await this.setParameters(parameters);
+        }
+        await this.executeCommand(command);
+    }
+
     // overridden method from Base Service
     public async executeCommand(command: ServiceCommand) {
         if (!this.connection.isConnected()) {
@@ -268,7 +295,9 @@ export class Service extends BaseService {
 
         // first set opMode and then set strategy
         await this.setOperationMode();
-        await this.serviceControl.communication.StrategyExt.write(strategy.id);
+        const node = this.automaticMode ?
+            this.serviceControl.communication.StrategyExt : this.serviceControl.communication.StrategyMan;
+        await node.write(strategy.id);
     }
 
     public getStrategyByNameOrDefault(strategyName: string) {
@@ -289,8 +318,12 @@ export class Service extends BaseService {
     }
 
     public async setOperationMode() {
-        await this.serviceControl.setToAutomaticOperationMode();
-        await this.serviceControl.setToExternalSourceMode();
+        if (this.automaticMode) {
+            await this.serviceControl.setToAutomaticOperationMode();
+            await this.serviceControl.setToExternalSourceMode();
+        } else {
+            await this.serviceControl.setToManualOperationMode();
+        }
     }
 
     public findInputParameter(parameterName: string): WritableDataAssembly {
@@ -314,7 +347,10 @@ export class Service extends BaseService {
         this.logger.debug(`[${this.qualifiedName}] Send command ${ServiceMtpCommand[command]}`);
         await this.setOperationMode();
 
-        await this.serviceControl.communication.CommandExt.write(command);
+        const node = this.automaticMode ?
+            this.serviceControl.communication.CommandExt :
+            this.serviceControl.communication.CommandMan;
+        await node.write(command);
         this.logger.trace(`[${this.qualifiedName}] Command ${ServiceMtpCommand[command]} written`);
     }
 

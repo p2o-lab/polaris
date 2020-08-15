@@ -62,6 +62,9 @@ export type OpModeRuntime = BaseDataAssemblyRuntime & {
     StateOffAct: OpcUaDataItem<boolean>;
 };
 
+/** Add Opmode functionality to OpMode.
+ * detects and supports old and new version of OpMode
+ */
 // tslint:disable-next-line:variable-name
 export function OpModeDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
@@ -73,7 +76,7 @@ export function OpModeDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
             super(...args);
             if (args[0].communication.OpMode) {
                 this.classicOpMode = true;
-                this.communication.OpMode = this.createDataItem('OpMode', 'write');
+                this.createDataItem('OpMode', 'write');
             } else {
                 this.classicOpMode = false;
                 this.communication.StateChannel = this.createDataItem('StateChannel', 'read', 'boolean');

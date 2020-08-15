@@ -23,32 +23,35 @@
  * SOFTWARE.
  */
 
-import {ParameterInterface} from '@p2olab/polaris-interface';
 import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
 import {Constructor} from './mixins';
 
-export type ValueLimitationRuntime = BaseDataAssemblyRuntime & {
-    VMin: OpcUaDataItem<number>;
-    VMax: OpcUaDataItem<number>;
+export type InterlockRuntime = BaseDataAssemblyRuntime & {
+    PermEn: OpcUaDataItem<boolean>;
+    Permit: OpcUaDataItem<boolean>;
+    IntlEn: OpcUaDataItem<boolean>;
+    Interlock: OpcUaDataItem<boolean>;
+    ProtEn: OpcUaDataItem<boolean>;
+    Protect: OpcUaDataItem<boolean>;
 };
 
-/*
-TODO: in new version there are also other ValueLimitation than VMax and VMin, e.g. RpmMin
- Find a good solution. Same is true for ScaleSettings
- */
-
 // tslint:disable-next-line:variable-name
-export function ValueLimitationDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
-
+export function InterlockDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
-        public communication: ValueLimitationRuntime;
+        public communication: InterlockRuntime;
 
         constructor(...args: any[]) {
             super(...args);
-            this.communication.VMax = this.createDataItem('VMax', 'read');
-            this.communication.VMin = this.createDataItem('VMin', 'read');
-        }
 
+            this.communication.PermEn = this.createDataItem('PermEn', 'read', 'boolean');
+            this.communication.Permit = this.createDataItem('Permit', 'read', 'boolean');
+
+            this.communication.IntlEn = this.createDataItem('IntlEn', 'read', 'boolean');
+            this.communication.Interlock = this.createDataItem('Interlock', 'read', 'boolean');
+
+            this.communication.ProtEn = this.createDataItem('ProtEn', 'read', 'boolean');
+            this.communication.Protect = this.createDataItem('Protect', 'read', 'boolean');
+        }
     };
 }

@@ -226,7 +226,7 @@ describe('Service', () => {
             expect(result).to.have.property('currentStrategy', 'Strategy 1');
             expect(result).to.have.property('name', 'Service1');
             expect(result).to.have.property('operationMode').to.equal('offline');
-            expect(result).to.have.property('sourceMode').to.equal('manual');
+            expect(result).to.have.property('sourceMode').to.equal('intern');
 
             await service.setOperationMode();
 

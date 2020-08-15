@@ -25,7 +25,7 @@
 
 import {DataType, Namespace, UAObject, Variant} from 'node-opcua';
 import {catTestServer} from '../logging/logging';
-import { ModuleTestOpMode } from './ModuleTestOpMode';
+import {ModuleTestOpMode} from './ModuleTestOpMode';
 
 export abstract class TestServerVariable {
 

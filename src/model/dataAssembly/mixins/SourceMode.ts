@@ -114,6 +114,14 @@ export function SourceModeDA<TBase extends Constructor<DataAssembly>>(Base: TBas
             }
         }
 
+        public async setToInternalSourceMode(): Promise<void> {
+            if (!this.isIntSource()) {
+                catDataAssembly.trace(`[${this.name}] Finally to Int`);
+                this.writeSourceMode(SourceMode.Intern);
+                await this.waitForSourceModeToPassSpecificTest(SourceMode.Intern);
+            }
+        }
+
         public async writeSourceMode(sourceMode: SourceMode) {
             catDataAssembly.debug(`[${this.name}] Write sourceMode: ${sourceMode}`);
             if (sourceMode === SourceMode.Manual) {

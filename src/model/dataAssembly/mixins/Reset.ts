@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,28 +23,25 @@
  * SOFTWARE.
  */
 
-import {OpcUaConnection} from '../core/OpcUaConnection';
-import {BaseDataAssemblyRuntime, DataAssembly} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
-import {MonitorSettings} from './mixins/MonitorSettings';
-import {ScaleSettingsDA, ScaleSettingsRuntime} from './mixins/ScaleSettings';
-import {UnitDA, UnitDataAssemblyRuntime} from './mixins/Unit';
+import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
+import {OpcUaDataItem} from '../DataItem';
+import {Constructor} from './mixins';
 
-export type AnaViewRuntime = BaseDataAssemblyRuntime & UnitDataAssemblyRuntime & ScaleSettingsRuntime & {
-    V: OpcUaDataItem<number>;
+export type ResetRuntime = BaseDataAssemblyRuntime & {
+    ResetOp: OpcUaDataItem<boolean>;
+    ResetAut: OpcUaDataItem<boolean>;
 };
 
-export class AnaView extends ScaleSettingsDA(UnitDA(DataAssembly)) {
-    public readonly communication: AnaViewRuntime;
+// tslint:disable-next-line:variable-name
+export function ResetDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
+    return class extends Base {
+        public communication: ResetRuntime;
 
-    constructor(options, connection: OpcUaConnection) {
-        super(options, connection);
-        this.communication.V = this.createDataItem('V', 'read');
-        this.type = 'number';
-        this.readDataItem = this.communication.V;
-    }
+        constructor(...args: any[]) {
+            super(...args);
 
-}
-
-export class AnaMon extends MonitorSettings(AnaView) {
+            this.communication.ResetOp = this.createDataItem('ResetOp', 'write', 'boolean');
+            this.communication.ResetAut = this.createDataItem('ResetAut', 'read', 'boolean');
+        }
+    };
 }

@@ -1,4 +1,3 @@
-/* tslint:disable:max-classes-per-file */
 /*
  * MIT License
  *
@@ -24,57 +23,50 @@
  * SOFTWARE.
  */
 
-import {OpcUaConnection} from '../core/OpcUaConnection';
-import {BaseDataAssemblyRuntime} from './DataAssembly';
-import {OpcUaDataItem} from './DataItem';
-import {OpModeDA, OpModeRuntime} from './mixins/OpMode';
-import {ScaleSettingsDA, ScaleSettingsRuntime} from './mixins/ScaleSettings';
-import {SourceModeDA, SourceModeRuntime} from './mixins/SourceMode';
-import {UnitDA, UnitDataAssemblyRuntime} from './mixins/Unit';
-import {ValueLimitationDA, ValueLimitationRuntime} from './mixins/ValueLimitation';
-import {WritableDataAssembly} from './WritableDataAssembly';
+/* tslint:disable:max-classes-per-file */
+import {OpcUaConnection} from '../../core/OpcUaConnection';
+import {OpcUaDataItem} from '../DataItem';
+import {ScaleSettingsDA, ScaleSettingsRuntime} from '../mixins/ScaleSettings';
+import {SourceModeDA, SourceModeRuntime} from '../mixins/SourceMode';
+import {UnitDA, UnitDataAssemblyRuntime} from '../mixins/Unit';
+import {ValueLimitationDA, ValueLimitationRuntime} from '../mixins/ValueLimitation';
+import {OperationElement, OperationElementRuntime} from './OperationElement';
 
-export type AnaOpRuntime = BaseDataAssemblyRuntime &
+export type AnaManRuntime = OperationElementRuntime &
     UnitDataAssemblyRuntime & ValueLimitationRuntime &
     ScaleSettingsRuntime & {
     VOut: OpcUaDataItem<number>;
+    VMan: OpcUaDataItem<number>;
     VRbk: OpcUaDataItem<number>;
-    VExt: OpcUaDataItem<number>;
+    VFbk: OpcUaDataItem<number>;
 };
 
-export class ExtAnaOp extends ValueLimitationDA(ScaleSettingsDA(UnitDA(WritableDataAssembly))) {
-    public readonly communication: AnaOpRuntime;
+export class AnaMan extends ValueLimitationDA(ScaleSettingsDA(UnitDA(OperationElement))) {
+    public readonly communication: AnaManRuntime;
 
     constructor(options, connection: OpcUaConnection) {
         super(options, connection);
         this.communication.VOut = this.createDataItem('VOut', 'read');
         this.communication.VRbk = this.createDataItem('VRbk', 'read');
-        this.communication.VExt = this.createDataItem('VExt', 'write');
-        this.writeDataItem = this.communication.VExt;
+        this.communication.VFbk = this.createDataItem('VFbk', 'read');
+        this.communication.VMan = this.createDataItem(['VMan', 'VExt'], 'write');
+        this.writeDataItem = this.communication.VMan;
         this.readDataItem = this.communication.VRbk;
         this.type = 'number';
     }
 }
 
-export type ExtIntAnaOpRuntime = AnaOpRuntime & OpModeRuntime & SourceModeRuntime & {
+export type AnaManIntRuntime = AnaManRuntime & SourceModeRuntime & {
     VInt: OpcUaDataItem<number>;
 };
 
-export class ExtIntAnaOp extends OpModeDA(SourceModeDA(ExtAnaOp)) {
+export class AnaManInt extends SourceModeDA(AnaMan) {
 
-    public readonly communication: ExtIntAnaOpRuntime;
+    public readonly communication: AnaManIntRuntime;
 
     constructor(options, connection: OpcUaConnection) {
         super(options, connection);
         this.type = 'number';
         this.communication.VInt = this.createDataItem('VInt', 'read');
     }
-}
-
-export class AdvAnaOp extends ExtIntAnaOp {
-
-}
-
-export class AnaServParam extends ExtIntAnaOp {
-
 }

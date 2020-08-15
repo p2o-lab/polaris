@@ -27,7 +27,7 @@ import {BaseDataAssemblyRuntime, DataAssembly} from '../DataAssembly';
 import {OpcUaDataItem} from '../DataItem';
 import {Constructor} from './mixins';
 
-export type MonitorSettingsRuntime = BaseDataAssemblyRuntime & {
+export type LimitMonitoringRuntime = BaseDataAssemblyRuntime & {
     VAHEn: OpcUaDataItem<boolean>;
     VAHLim: OpcUaDataItem<number>;
     VAHAct: OpcUaDataItem<boolean>;
@@ -49,30 +49,35 @@ export type MonitorSettingsRuntime = BaseDataAssemblyRuntime & {
 };
 
 // tslint:disable-next-line:variable-name
-export function MonitorSettings<TBase extends Constructor<DataAssembly>>(Base: TBase) {
+export function LimitMonitoringDA<TBase extends Constructor<DataAssembly>>(Base: TBase) {
     return class extends Base {
-        public communication: MonitorSettingsRuntime;
+        public communication: LimitMonitoringRuntime;
 
         constructor(...args: any[]) {
             super(...args);
-            this.communication.VAHEn = this.createDataItem('VAHEn', 'write');
-            this.communication.VAHLim = this.createDataItem('VAHLim', 'write');
-            this.communication.VAHAct = this.createDataItem('VAHAct', 'write');
-            this.communication.VWHEn = this.createDataItem('VWHEn', 'write');
-            this.communication.VWHLim = this.createDataItem('VWHLim', 'write');
-            this.communication.VWHAct = this.createDataItem('VWHAct', 'write');
-            this.communication.VTHEn = this.createDataItem('VTHEn', 'write');
-            this.communication.VTHLim = this.createDataItem('VTHLim', 'write');
-            this.communication.VTHAct = this.createDataItem('VTHAct', 'write');
-            this.communication.VALEn = this.createDataItem('VALEn', 'write');
-            this.communication.VALLim = this.createDataItem('VALLim', 'write');
-            this.communication.VALAct = this.createDataItem('VALAct', 'write');
-            this.communication.VWLEn = this.createDataItem('VWLEn', 'write');
-            this.communication.VWLLim = this.createDataItem('VWLLim', 'write');
-            this.communication.VWLAct = this.createDataItem('VWLAct', 'write');
-            this.communication.VTLEn = this.createDataItem('VTLEn', 'write');
-            this.communication.VTLLim = this.createDataItem('VTLLim', 'write');
-            this.communication.VTLAct = this.createDataItem('VTLAct', 'write');
+            this.communication.VAHEn = this.createDataItem(['AHEn', 'VAHEn'], 'read', 'boolean');
+            this.communication.VAHLim = this.createDataItem(['AHLim', 'VAHLim'], 'write');
+            this.communication.VAHAct = this.createDataItem(['AHAct', 'VAHAct'], 'read', 'boolean');
+
+            this.communication.VWHEn = this.createDataItem(['WHEn', 'VWHEn'], 'read', 'boolean');
+            this.communication.VWHLim = this.createDataItem(['WHLim', 'VWHLim'], 'write');
+            this.communication.VWHAct = this.createDataItem(['WHAct', 'VWHAct'], 'read', 'boolean');
+
+            this.communication.VTHEn = this.createDataItem(['THEn', 'VTHEn'], 'read', 'boolean');
+            this.communication.VTHLim = this.createDataItem(['THLim', 'VTHLim'], 'write');
+            this.communication.VTHAct = this.createDataItem(['THAct', 'VTHAct'], 'read', 'boolean');
+
+            this.communication.VTLEn = this.createDataItem(['TLEn', 'VTLEn'], 'read', 'boolean');
+            this.communication.VTLLim = this.createDataItem(['TLLim', 'VTLLim'], 'write');
+            this.communication.VTLAct = this.createDataItem(['TLAct', 'VTLAct'], 'read', 'boolean');
+
+            this.communication.VWLEn = this.createDataItem(['WLEn', 'VWLEn'], 'read', 'boolean');
+            this.communication.VWLLim = this.createDataItem(['WLLim', 'VWLLim'], 'write');
+            this.communication.VWLAct = this.createDataItem(['WLAct', 'VWLAct'], 'read', 'boolean');
+
+            this.communication.VALEn = this.createDataItem(['ALEn', 'VALEn'], 'read', 'boolean');
+            this.communication.VALLim = this.createDataItem(['ALLim', 'VALLim'], 'write');
+            this.communication.VALAct = this.createDataItem(['ALAct', 'VALAct'], 'read', 'boolean');
         }
     };
 }

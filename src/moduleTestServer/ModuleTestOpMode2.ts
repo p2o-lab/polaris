@@ -26,6 +26,7 @@
 import {OperationMode} from '@p2olab/polaris-interface';
 import { DataType, Namespace, StatusCodes, UAObject, Variant } from 'node-opcua';
 
+/** new version of OpMode for testserver */
 export class ModuleTestOpMode2 {
     public opMode: OperationMode = OperationMode.Offline;
     public stateChannel: boolean = false;
